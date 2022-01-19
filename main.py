@@ -7,7 +7,7 @@ from Column import *
 
 db = postgresql.open('pq://demo:demo@127.0.0.1:5432/carService')
 
-db = PostgreSQLDB()
+db = PostgreSQLDB(True)
 db.connect(dbName="carService")
 
 users = Table("users")

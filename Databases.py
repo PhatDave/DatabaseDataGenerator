@@ -11,9 +11,10 @@ class PostgreSQLDB(Database):
 	import postgresql
 	global postgresql
 
-	def __init__(self):
+	def __init__(self, override=False):
 		self.__connection = None
 		self.__tables = []
+		self.override = override
 		# db = postgresql.open('pq://demo:demo@127.0.0.1:5432/carService')
 
 	def connect(self, user="demo", password="demo", ip="127.0.0.1", port="5432", dbName="demo"):
@@ -31,10 +32,11 @@ class PostgreSQLDB(Database):
 			try:
 				self.__connection.execute(query.query)
 			except postgresql.exceptions.UniqueError:
-				pkColumn = query.table.getPkColumnName()
-				pk = query.values[query.names.index(pkColumn)]
-				self.__connection.execute(f"DELETE FROM users WHERE {pkColumn}={pk};")
-				self.__connection.execute(query.query)
+				if self.override:
+					pkColumn = query.table.getPkColumnName()
+					pk = query.values[query.names.index(pkColumn)]
+					self.__connection.execute(f"DELETE FROM users WHERE {pkColumn}={pk};")
+					self.__connection.execute(query.query)
 		return
 
 	def __generateQueries(self):

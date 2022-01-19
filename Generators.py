@@ -102,3 +102,12 @@ class FakeNameGenerator(Generator):
 	def generate(self):
 		name = f"{self.__faker.first_name()} {self.__faker.last_name()}"
 		return name
+
+
+class FakeCityGenerator(Generator):
+	def __init__(self):
+		self.__faker = Faker()
+
+	def generate(self):
+		name = self.__faker.city()
+		return name
