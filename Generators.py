@@ -16,7 +16,9 @@ class RandomStringGenerator(Generator):
 	class EmptyStringException(Exception):
 		pass
 
-	def __init__(self, length=10, hasLowercase=True, hasUppercase=False,
+	def __init__(self, length=10,
+				 hasLowercase=True,
+				 hasUppercase=False,
 				 hasDigits=False):
 		self.length = length
 		self.hasLowercase = hasLowercase
