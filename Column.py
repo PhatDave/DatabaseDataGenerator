@@ -11,9 +11,7 @@ class Column:
 			self.assignGenerator(generator)
 
 	def assignGenerator(self, generator):
-		if not isinstance(generator, Generator):
-			# TODO: Raise exception instead of return
-			return
+		# TODO: for generator: Generator Generator is not defined; huh?
 		self.__generator = generator
 
 	def generate(self):

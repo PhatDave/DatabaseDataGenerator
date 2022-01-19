@@ -8,11 +8,10 @@ from Table import *
 from Column import *
 
 # https://faker.readthedocs.io/en/master/providers.html
-db = PostgreSQLDB(True)
+db = PostgreSQLDB(True, True)
 db.connect(dbName="carService")
 
 users = Table("users")
-db.addTable(users)
 users.addColumns([
 	Column("id", SerialGenerator(1), True),
 	Column("city", FakeCityGenerator()),
@@ -23,17 +22,24 @@ users.addColumns([
 	Column("last_name", FakeLastNameGenerator()),
 	Column("street_number", RandomIntegerGenerator(0, 1000)),
 ])
-
 cars = Table("cars")
-db.addTable(cars)
 cars.addColumns([
 	Column("id", SerialGenerator(1), True),
 	Column("color", SetGenerator({"red", "blue", "yellow", "green", "purple"})),
 	Column("manufacturer_model", RandomIntegerGenerator(0, 6)),
 	Column("production_year", RandomIntegerGenerator(1990, 2020)),
 	Column("registration", FakeLicensePlateGenerator()),
-	Column("userid", SerialGenerator(1)),
+	Column("userid", SetGenerator(db.getPkSet(users), False)),
 ])
 
-for i in range(100):
+db.wipeTable(cars)
+db.wipeTable(users)
+
+db.setTable(users)
+for i in range(1000):
+	db.insertRow()
+
+db.setTable(cars)
+
+for i in range(1000):
 	db.insertRow()

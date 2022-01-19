@@ -49,6 +49,10 @@ for i in range(100):
 
 ---
 
+`db.wipeTable(Table)` can be used for dropping all entries in a table
+
+---
+
 ## Available generators
 
 With example output
@@ -75,7 +79,8 @@ SerialGenerator(start=0, step=1)
 # 1
 # 2
 
-SetGenerator(chSet)
+SetGenerator(chSet, destructive=False)
+# for destructive=True entries are removed from the set as they are picked
 # SetGenerator({'a', 'b', 12, 43, "testing"})
 # 12
 # b

@@ -6,10 +6,7 @@ class Table:
 		self.name = name
 		self.columns = []
 
-	def addColumn(self, column):
-		if not isinstance(column, Column):
-			# TODO: Raise exception instead of return
-			return
+	def addColumn(self, column: Column):
 		self.columns.append(column)
 
 	def addColumns(self, columns):

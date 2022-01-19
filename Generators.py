@@ -3,6 +3,8 @@ import string
 from faker import Faker
 from faker_vehicle import VehicleProvider
 
+import Table
+
 
 class Generator:
 	def __init__(self):
@@ -72,11 +74,15 @@ class SerialGenerator(Generator):
 
 
 class SetGenerator(Generator):
-	def __init__(self, chSet):
+	def __init__(self, chSet, destructive=False):
 		self.chSet = list(chSet)
+		self.__destructive = destructive
 
 	def generate(self):
-		return random.choice(self.chSet)
+		pick = random.choice(self.chSet)
+		if self.__destructive:
+			self.chSet.remove(pick)
+		return pick
 
 
 class FakeFirstNameGenerator(Generator):
