@@ -12,7 +12,7 @@ class Generator:
 		pass
 
 
-class RandomGenerator(Generator):
+class RandomStringGenerator(Generator):
 	class EmptyStringException(Exception):
 		pass
 
@@ -46,7 +46,7 @@ class RandomGenerator(Generator):
 				"Random string can not be empty!")
 
 
-class RandomIntegerGenerator(RandomGenerator):
+class RandomIntegerGenerator(RandomStringGenerator):
 	def __init__(self, imin, imax):
 		super().__init__()
 		self.imin = int(imin)
@@ -110,4 +110,25 @@ class FakeCityGenerator(Generator):
 
 	def generate(self):
 		name = self.__faker.city()
+		name = name.replace('\'', "")
+		return name
+
+
+class FakeCountryGenerator(Generator):
+	def __init__(self):
+		self.__faker = Faker()
+
+	def generate(self):
+		name = self.__faker.country()
+		name = name.replace('\'', "")
+		return name
+
+
+class FakeStreetGenerator(Generator):
+	def __init__(self):
+		self.__faker = Faker()
+
+	def generate(self):
+		name = self.__faker.street_name()
+		name = name.replace('\'', "")
 		return name
