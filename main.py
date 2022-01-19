@@ -13,7 +13,7 @@ db.connect(dbName="carService")
 users = Table("users")
 db.addTable(users)
 users.addColumns([
-	Column("id", SerialGenerator(10001)),
+	Column("id", SerialGenerator(1), True),
 	Column("city", RandomGenerator(10)),
 	Column("country", RandomGenerator(10)),
 	Column("postal_number", RandomIntegerGenerator(1e4, 1e5)),
@@ -22,5 +22,5 @@ users.addColumns([
 	Column("last_name", FakeLastNameGenerator()),
 ])
 
-for i in range(10000):
+for i in range(2):
 	db.insertRow()

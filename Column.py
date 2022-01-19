@@ -2,8 +2,9 @@ from Generators import *
 
 
 class Column:
-	def __init__(self, name, generator=None):
+	def __init__(self, name, generator=None, pk=False):
 		self.name = name
+		self.pk = pk
 
 		self.__generator = None
 		if generator is not None:

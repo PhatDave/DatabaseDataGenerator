@@ -15,3 +15,9 @@ class Table:
 	def addColumns(self, columns):
 		for i in columns:
 			self.addColumn(i)
+
+	def getPkColumnName(self):
+		for i in self.columns:
+			if i.pk:
+				return i.name
+		return ""

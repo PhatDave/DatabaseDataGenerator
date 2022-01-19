@@ -1,4 +1,5 @@
 from Table import *
+from Query import *
 
 
 class Database:
@@ -25,38 +26,21 @@ class PostgreSQLDB(Database):
 		self.__tables.append(table)
 
 	def insertRow(self):
-		# TODO: Handle duplicate keys properly
-		queries = self.__generateQuery()
+		queries = self.__generateQueries()
 		for query in queries:
-			query = query.replace("[", "")
-			query = query.replace("]", "")
-			print(query)
-			self.__connection.execute(query)
+			try:
+				self.__connection.execute(query.query)
+			except postgresql.exceptions.UniqueError:
+				pkColumn = query.table.getPkColumnName()
+				pk = query.values[query.names.index(pkColumn)]
+				self.__connection.execute(f"DELETE FROM users WHERE {pkColumn}={pk};")
+				self.__connection.execute(query.query)
 		return
 
-	def __generateQuery(self):
+	def __generateQueries(self):
 		queries = []
 		for table in self.__tables:
-			queries.append(f"INSERT INTO {table.name}({self.__generateColumnNames(table)}) VALUES ({self.__generateValues(table)});")
+			query = Query()
+			query.generate(table)
+			queries.append(query)
 		return queries
-
-	def __generateColumnNames(self, table):
-		names = ""
-		for i in table.columns:
-			names += i.name + ","
-		names = names[:-1]
-		return names
-
-	@DeprecationWarning
-	def __enumerateColumns(self, table):
-		names = ""
-		for i in range(1, table.columns.__len__() + 1):
-			names += f"${i},"
-		names = names[:-1]
-		return names
-
-	def __generateValues(self, table):
-		values = []
-		for column in table.columns:
-			values.append(column.generate())
-		return values
