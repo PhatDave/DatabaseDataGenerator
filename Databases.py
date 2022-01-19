@@ -25,17 +25,19 @@ class PostgreSQLDB(Database):
 		self.__tables.append(table)
 
 	def insertRow(self):
+		# TODO: Handle duplicate keys properly
 		queries = self.__generateQuery()
-		values = self.__generateValues()
-		for i, query in enumerate(queries):
-			value = values[i]
-			mkemp(value)
+		for query in queries:
+			query = query.replace("[", "")
+			query = query.replace("]", "")
+			print(query)
+			self.__connection.execute(query)
 		return
 
 	def __generateQuery(self):
 		queries = []
 		for table in self.__tables:
-			queries.append(f"INSERT INTO {table.name}({self.__generateColumnNames(table)}) VALUES ({self.__enumerateColumns(table)})")
+			queries.append(f"INSERT INTO {table.name}({self.__generateColumnNames(table)}) VALUES ({self.__generateValues(table)});")
 		return queries
 
 	def __generateColumnNames(self, table):
@@ -45,6 +47,7 @@ class PostgreSQLDB(Database):
 		names = names[:-1]
 		return names
 
+	@DeprecationWarning
 	def __enumerateColumns(self, table):
 		names = ""
 		for i in range(1, table.columns.__len__() + 1):
@@ -52,11 +55,8 @@ class PostgreSQLDB(Database):
 		names = names[:-1]
 		return names
 
-	def __generateValues(self):
+	def __generateValues(self, table):
 		values = []
-		for table in self.__tables:
-			tvalues = []
-			for column in table.columns:
-				tvalues.append(column.generate())
-			values.append(tvalues)
+		for column in table.columns:
+			values.append(column.generate())
 		return values

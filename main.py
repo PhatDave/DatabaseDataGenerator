@@ -25,11 +25,12 @@ db.connect(dbName="carService")
 users = Table("users")
 db.addTable(users)
 users.addColumns([
-	Column("id", SerialGenerator(1300)),
-	Column("city", RandomGenerator(255)),
-	Column("country", RandomGenerator(255)),
-	Column("postal_number", RandomGenerator(10, False, False, True)),
-	Column("street", RandomGenerator(255)),
+	Column("id", SerialGenerator(10001)),
+	Column("city", RandomGenerator(10)),
+	Column("country", RandomGenerator(10)),
+	Column("postal_number", RandomIntegerGenerator(1e4, 1e5)),
+	Column("street", RandomGenerator(10)),
 ])
 
-db.insertRow()
+for i in range(10000):
+	db.insertRow()
