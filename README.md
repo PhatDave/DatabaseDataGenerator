@@ -15,17 +15,21 @@ Generators can be found in Generators.py
 ## Another example
 
 ```py
+from Databases import *
+from Table import Table
+from Column import Column
+
 # Initialize database where insertion replaces rows which already exist (with same pk)
-db = PostgreSQL(override=True)
+db = PostgreSQLDB(override=True)
 db.connect(user="demo", password="demo", ip="127.0.0.1", port="5432", dbName="demo")
 
 # Create a table object which will signify the existance of that table in the database
 # In other words, when queries are generated these are the tables that are inserted to
-table_name = Table("some_table_name")
+some_table = Table("some_table_name")
 # INSERT INTO some_table_name VALUES ...
 
 # A database can have multiple tables and they will all be added rows simultaneously though this is untested yet
-db.addTable(table_name)
+db.addTable(some_table)
 
 # Adding columns to a table can either be done in batch (like below) or one by one
 # Columns have a name and a generator, they can also be the primary key (the pk comes into play when override is enabled and rows will be overriden by removing the row by the PK column)
@@ -34,7 +38,7 @@ some_table.addColumns([
 	Column("some_data", RandomStringGenerator()),
 ])
 # Example of adding one column
-some_table.addColumn(Column("some_other_data", RandomIntegerGenerator()))
+some_table.addColumn(Column("some_other_data", RandomIntegerGenerator(1e3, 1e6)))
 
 # From here calling db.insertRow() will insert a single row, call it multiple times to insert mutliple rows
 for i in range(100):
