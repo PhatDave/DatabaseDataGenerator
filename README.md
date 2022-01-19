@@ -49,7 +49,7 @@ for i in range(100):
 
 ---
 
-`db.wipeTable(Table)` can be used for dropping all entries in a table
+`db.wipeTable(Table)` can be used for dropping all entries in a table, see main.py for example
 
 ---
 
