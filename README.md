@@ -1,4 +1,4 @@
-# PostreSQL-Random-Data-Generator
+# DatabaseDataGenerator
 
 ## Generates large amounts of fake data for testing purposes
 
