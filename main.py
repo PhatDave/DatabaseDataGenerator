@@ -6,8 +6,6 @@ from Table import *
 from Column import *
 
 # https://faker.readthedocs.io/en/master/providers.html
-db = postgresql.open('pq://demo:demo@127.0.0.1:5432/carService')
-
 db = PostgreSQLDB(True)
 db.connect(dbName="carService")
 
@@ -24,5 +22,5 @@ users.addColumns([
 	Column("street_number", RandomIntegerGenerator(0, 1000)),
 ])
 
-for i in range(10000):
+for i in range(100):
 	db.insertRow()
