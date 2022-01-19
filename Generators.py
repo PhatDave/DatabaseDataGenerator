@@ -1,5 +1,7 @@
 import random
+import re
 import string
+from faker import Faker
 
 
 class Generator:
@@ -73,3 +75,30 @@ class SetGenerator(Generator):
 
 	def generate(self):
 		return random.choice(self.chSet)
+
+
+class FakeFirstNameGenerator(Generator):
+	def __init__(self):
+		self.__faker = Faker()
+
+	def generate(self):
+		name = self.__faker.first_name()
+		return name
+
+
+class FakeLastNameGenerator(Generator):
+	def __init__(self):
+		self.__faker = Faker()
+
+	def generate(self):
+		name = self.__faker.last_name()
+		return name
+
+
+class FakeNameGenerator(Generator):
+	def __init__(self):
+		self.__faker = Faker()
+
+	def generate(self):
+		name = f"{self.__faker.first_name()} {self.__faker.last_name()}"
+		return name
