@@ -24,5 +24,16 @@ users.addColumns([
 	Column("street_number", RandomIntegerGenerator(0, 1000)),
 ])
 
+cars = Table("cars")
+db.addTable(cars)
+cars.addColumns([
+	Column("id", SerialGenerator(1), True),
+	Column("color", SetGenerator({"red", "blue", "yellow", "green", "purple"})),
+	Column("manufacturer_model", RandomIntegerGenerator(0, 6)),
+	Column("production_year", RandomIntegerGenerator(1990, 2020)),
+	Column("registration", FakeLicensePlateGenerator()),
+	Column("userid", SerialGenerator(1)),
+])
+
 for i in range(100):
 	db.insertRow()
