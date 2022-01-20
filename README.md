@@ -1,6 +1,6 @@
 # DatabaseDataGenerator
 
-# https://pypi.org/project/database-data-generator/1.0.0/
+# https://pypi.org/project/DatabaseDataGenerator
 
 ## Generates large amounts of fake data for testing purposes
 
