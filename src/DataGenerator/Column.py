@@ -5,9 +5,9 @@ class Column:
 
 		self.__generator = None
 		if generator is not None:
-			self.assignGenerator(generator)
+			self.__assignGenerator(generator)
 
-	def assignGenerator(self, generator):
+	def __assignGenerator(self, generator):
 		# TODO: for generator: Generator Generator is not defined; huh?
 		self.__generator = generator
 

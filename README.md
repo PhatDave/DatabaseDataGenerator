@@ -29,6 +29,9 @@ from DataGenerator.Column import *
 db = Databases.PostgreSQLDB(override=True)
 db.connect(user="demo", password="demo", ip="127.0.0.1", port="5432", dbName="demo")
 
+# db = Sqlite3DB(True, False)
+# db.connect(dbName=r"demo.sqlite3")
+
 # Create a table object which will signify the existance of that table in the database
 # In other words, when queries are generated these are the tables that are inserted to
 some_table = Table("some_table_name")
@@ -56,7 +59,53 @@ db.insertRows(some_table, 200)
 
 ---
 
-`db.wipeTable(Table)` can be used for dropping all entries in a table, see main.py for example
+## **`Database`**
+
+**`Database(bool override, bool wipe)`**
+
+Wipe will drop every table when `Database.setTable` is called
+Override will drop replace every item which would conflict generated query (such as id's being overridden), currently deprecated by wipe
+
+**`Database.setTable(Table table)`**
+
+Sets the table which `Database.insertRow`˙will affect which is currently deprecated by `Database.insertRows()`
+
+**`Database.connect(args) -> None`**
+    
+Connects to the database, arguments depend on the connection interface, see example above
+
+**`Database.wipeTable(Table table) -> None`**
+    
+Drops all entries in a table, see main.py for example
+
+**`Database.insertRows(Table table, int nRows) -> None`**
+
+Inserts n rows into table in database, requires configured table before usage
+
+**`Database.getPkSet(Table table) -> Set`**
+
+Mainly used with `SetGenerator` to satisfy foreign keys to ensure a 1:1 or 1:N relationship, see example below
+```py
+user = Table("user")
+user.addColumns([
+	Column("id", SerialGenerator(1), True),
+])
+shirt = Table("shirt")
+shirt.addColumns([
+	Column("id", SerialGenerator(1), True),
+	Column("user_fk", SetGenerator(db.getPkSet(user), True)),
+])
+```
+
+## **`Table`**
+
+**`Table(String name)`**
+
+The given name must mimic the database's table name and will be used in the query
+
+**`Table.fromCsv(String filename)`**
+
+Reads the csv and adds as many columns as the csv, such created columns have `SetGenerator`s assigned according to the data in the csv's column
 
 ---
 
@@ -87,7 +136,7 @@ SerialGenerator(start=0, step=1)
 # 2
 
 SetGenerator(chSet, destructive=False)
-# for destructive=True entries are removed from the set as they are picked
+# For destructive=True entries are removed from the set as they are picked
 # SetGenerator({'a', 'b', 12, 43, "testing"})
 # 12
 # b
