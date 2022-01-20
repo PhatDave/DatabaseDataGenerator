@@ -1,4 +1,5 @@
-from . import Table
+from .Table import *
+from .Query import *
 
 class Database:
 	def __init__(self):

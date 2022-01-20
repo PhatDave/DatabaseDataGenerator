@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="DatabaseDataGenerator",
-    version="1.1.0",
+    version="1.3.0",
     author="PhatDave",
     author_email="kosmodiskclassic0@gmail.com",
     description="Generates any amount of data for supported databases (currently postgresql and sqlite)",

@@ -1,4 +1,4 @@
-from . import Column
+from .Column import *
 
 class Table:
 	def __init__(self, name):
