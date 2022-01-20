@@ -50,6 +50,20 @@ class RandomStringGenerator(Generator):
 				"Random string can not be empty!")
 
 
+class SequentialPatternGenerator(Generator):
+	def __init__(self, pattern, chList):
+		self.__pattern = pattern
+		self.__chList = chList
+
+	def generate(self):
+		pick = self.__chList.pop(0)
+		output = self.__trySub(self.__pattern, "%s", pick)
+		return output
+	
+	def __trySub(self, istr, pattern, sub):
+		return istr.replace(pattern, str(sub))
+
+
 class RandomIntegerGenerator(RandomStringGenerator):
 	def __init__(self, imin, imax):
 		super().__init__()
@@ -59,6 +73,18 @@ class RandomIntegerGenerator(RandomStringGenerator):
 	def generate(self):
 		ran = random.randint(self.imin, self.imax)
 		return int(ran)
+
+
+class RandomFloatGenerator(RandomStringGenerator):
+	def __init__(self, fmin, fmax, decimals=2):
+		super().__init__()
+		self.__fmin = int(fmin)
+		self.__fmax = int(fmax)
+		self.__decimals = decimals
+
+	def generate(self):
+		ran = self.__fmin + (random.random() * (self.__fmax - self.__fmin))
+		return round(float(ran), self.__decimals)
 
 
 class SerialGenerator(Generator):
