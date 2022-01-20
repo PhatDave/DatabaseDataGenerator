@@ -35,7 +35,7 @@ some_table = Table("some_table_name")
 # INSERT INTO some_table_name VALUES ...
 
 # A database can have multiple tables and they will all be added rows simultaneously though this is untested yet
-db.addTable(some_table)
+db.setTable(some_table)
 
 # Adding columns to a table can either be done in batch (like below) or one by one
 # Columns have a name and a generator, they can also be the primary key (the pk comes into play when override is enabled and rows will be overriden by removing the row by the PK column)
@@ -49,6 +49,9 @@ some_table.addColumn(Column("some_other_data", RandomIntegerGenerator(1e3, 1e6))
 # From here calling db.insertRow() will insert a single row, call it multiple times to insert mutliple rows
 for i in range(100):
 	db.insertRow()
+
+# Can also be used to insert 200 rows to some_table
+db.insertRows(some_table, 200)
 ```
 
 ---
