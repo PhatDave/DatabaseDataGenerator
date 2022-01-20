@@ -2,7 +2,7 @@
 
 ## Generates large amounts of fake data for testing purposes
 
-## Currently only supports postgresql!
+## Currently only supports postgresql & sqlite3!
 
 ---
 

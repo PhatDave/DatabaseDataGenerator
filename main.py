@@ -9,26 +9,26 @@ from Column import *
 db = Sqlite3DB(True, True)
 db.connect(dbName="demo.db")
 
-users = Table("pokemon")
-users.addColumns([
+pokemon = Table("pokemon")
+pokemon.addColumns([
 	Column("poke_id", SerialGenerator(1), True),
-	Column("name", Fake()),
-	Column("country", FakeCountryGenerator()),
-	Column("postal_number", RandomIntegerGenerator(1e4, 1e5)),
-	Column("street", FakeStreetGenerator()),
-	Column("first_name", FakeFirstNameGenerator()),
-	Column("last_name", FakeLastNameGenerator()),
-	Column("street_number", RandomIntegerGenerator(0, 1000)),
+	Column("name", FakeFirstNameGenerator()),
+])
+type = Table("type")
+type.addColumns([
+	Column("type_id", SerialGenerator(1), True),
+	Column("poke_fk", SetGenerator(db.getPkSet(pokemon))),
+	Column("name", SetGenerator({"Fire", "Water", "Ice", "Earth", "Electric"})),
 ])
 
-db.wipeTable(cars)
-db.wipeTable(users)
+db.wipeTable(pokemon)
+db.wipeTable(type)
 
-db.setTable(users)
-for i in range(1000):
+db.setTable(pokemon)
+for i in range(100):
 	db.insertRow()
 
-db.setTable(cars)
+db.setTable(type)
 
-for i in range(1000):
+for i in range(250):
 	db.insertRow()

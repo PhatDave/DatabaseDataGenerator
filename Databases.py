@@ -78,14 +78,14 @@ class Sqlite3DB(Database):
 			self.wipeTable(table)
 
 	def wipeTable(self, table: Table):
-		self.__cursor.execute(f"DELETE FROM {table.name} *;")
-		self.__cursor.commit()
+		self.__cursor.execute(f"DELETE FROM {table.name};")
+		self.__connection.commit()
 
 	def insertRow(self):
 		query = self.__generateQuery()
 		try:
 			self.__cursor.execute(query.query)
-			self.__cursor.commit()
+			self.__connection.commit()
 		# 	TODO: Fix exception
 		except postgresql.exceptions.UniqueError:
 			if self.__override:
@@ -93,9 +93,9 @@ class Sqlite3DB(Database):
 				pk = query.values[query.names.index(pkColumn)]
 				self.__cursor.execute(
 					f"DELETE FROM {query.table.name} WHERE {pkColumn}={pk};")
-				self.__cursor.commit()
+				self.__connection.commit()
 				self.__cursor.execute(query.query)
-				self.__cursor.commit()
+				self.__connection.commit()
 		return
 
 	def __generateQuery(self):
@@ -104,9 +104,9 @@ class Sqlite3DB(Database):
 		return query
 
 	def getPkSet(self, table: Table):
-		# TODO: rework for sqlite
-		test = self.__connection.prepare(
-			f"SELECT {table.getPkColumnName()} FROM {table.name}")
-		arr = test()
-		arr = [i[0] for i in arr]
+		# TODO: add exception for no pk found
+		arr = []
+		for row in self.__cursor.execute(
+			f"SELECT {table.getPkColumnName()} FROM {table.name}"):
+			arr.append(row[0])
 		return set(arr)
