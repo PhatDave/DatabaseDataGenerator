@@ -16,6 +16,22 @@ class Query:
 
 		return self.query
 
+	def generateBig(self, table, rows):
+		if self.table is None:
+			self.table = table
+
+		self.query = f"INSERT INTO {table.name}({', '.join(self.__generateColumnNames(table))}) VALUES\n"
+
+		for i in range(rows):
+			self.query += f"({self.__generateValues(table)}),\n"
+		self.query = self.query[:-2]
+		self.query += ";"
+
+		self.query = self.query.replace("[", "")
+		self.query = self.query.replace("]", "")
+
+		return self.query
+
 	def __generateColumnNames(self, table):
 		self.names = []
 		for i in table.columns:

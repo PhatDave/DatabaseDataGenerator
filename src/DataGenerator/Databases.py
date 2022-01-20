@@ -6,16 +6,7 @@ class Database:
 	def __init__(self):
 		self.__connection = None
 
-	def insertRows(self, table, numRows, bar=True):
-		self.setTable(table)
-		if bar:
-			iterator = tqdm(range(numRows), ncols=200)
-		else:
-			iterator = range(numRows)
-		for i in iterator:
-			self.insertRow()
 
-# TODO: Add sqlite3
 class PostgreSQLDB(Database):
 	import postgresql
 	global postgresql
@@ -30,11 +21,6 @@ class PostgreSQLDB(Database):
 				port="5432", dbName="demo"):
 		self.__connection = postgresql.open(
 			f'pq://{user}:{password}@{ip}:{port}/{dbName}')
-
-	def setTable(self, table: Table):
-		self.__table = table
-		if self.__wipe:
-			self.wipeTable(table)
 
 	def wipeTable(self, table: Table):
 		self.__connection.execute(f"DELETE FROM {table.name} *;")
@@ -52,6 +38,15 @@ class PostgreSQLDB(Database):
 				self.__connection.execute(query.query)
 		return
 
+	def insertRows(self, table, numRows, bar=True):
+		self.setTable(table)
+		if bar:
+			iterator = tqdm(range(numRows), ncols=200)
+		else:
+			iterator = range(numRows)
+		for i in iterator:
+			self.insertRow()
+
 	def __generateQuery(self):
 		query = Query()
 		query.generate(self.__table)
@@ -64,6 +59,10 @@ class PostgreSQLDB(Database):
 		arr = [i[0] for i in arr]
 		return set(arr)
 
+	def setTable(self, table: Table):
+		self.__table = table
+		if self.__wipe:
+			self.wipeTable(table)
 
 
 class Sqlite3DB(Database):
@@ -80,11 +79,6 @@ class Sqlite3DB(Database):
 	def connect(self, dbName="demo.db"):
 		self.__connection = sqlite3.connect(dbName)
 		self.__cursor = self.__connection.cursor()
-
-	def setTable(self, table: Table):
-		self.__table = table
-		if self.__wipe:
-			self.wipeTable(table)
 
 	def wipeTable(self, table: Table):
 		self.__cursor.execute(f"DELETE FROM {table.name};")
@@ -107,9 +101,20 @@ class Sqlite3DB(Database):
 		# 		self.__connection.commit()
 		return
 
+	def insertRows(self, table, numRows):
+		self.setTable(table)
+		query = self.__generateBigQuery(numRows)
+		self.__cursor.execute(query.query)
+		self.__connection.commit()
+
 	def __generateQuery(self):
 		query = Query()
 		query.generate(self.__table)
+		return query
+
+	def __generateBigQuery(self, rows):
+		query = Query()
+		query.generateBig(self.__table, rows)
 		return query
 
 	def getPkSet(self, table: Table):
@@ -119,3 +124,8 @@ class Sqlite3DB(Database):
 			f"SELECT {table.getPkColumnName()} FROM {table.name}"):
 			arr.append(row[0])
 		return set(arr)
+
+	def setTable(self, table: Table):
+		self.__table = table
+		if self.__wipe:
+			self.wipeTable(table)
