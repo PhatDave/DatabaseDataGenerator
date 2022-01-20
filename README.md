@@ -19,12 +19,14 @@ The majority of generators are wrappers of [Faker](https://faker.readthedocs.io/
 ## Another example
 
 ```py
-from Databases import *
-from Table import Table
-from Column import Column
+from DataGenerator import *
+from DataGenerator.Generators import *
+from DataGenerator.Table import *
+from DataGenerator.Column import *
+# Currently I don't know how to handle imports any better
 
 # Initialize database where insertion replaces rows which already exist (with same pk)
-db = PostgreSQLDB(override=True)
+db = Databases.PostgreSQLDB(override=True)
 db.connect(user="demo", password="demo", ip="127.0.0.1", port="5432", dbName="demo")
 
 # Create a table object which will signify the existance of that table in the database
