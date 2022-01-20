@@ -6,6 +6,15 @@ class Database:
 	def __init__(self):
 		self.__connection = None
 
+	def insertRows(self, table, numRows, bar=True):
+		self.setTable(table)
+		if bar:
+			iterator = tqdm(range(numRows), ncols=200)
+		else:
+			iterator = range(numRows)
+		for i in iterator:
+			self.insertRow()
+
 # TODO: Add sqlite3
 class PostgreSQLDB(Database):
 	import postgresql
@@ -97,15 +106,6 @@ class Sqlite3DB(Database):
 		# 		self.__cursor.execute(query.query)
 		# 		self.__connection.commit()
 		return
-
-	def insertRows(self, table, numRows, bar=True):
-		self.setTable(table)
-		if bar:
-			iterator = tqdm(range(numRows), ncols=200)
-		else:
-			iterator = range(numRows)
-		for i in iterator:
-			self.insertRow()
 
 	def __generateQuery(self):
 		query = Query()
