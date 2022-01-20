@@ -1,5 +1,7 @@
 # DatabaseDataGenerator
 
+# https://pypi.org/project/database-data-generator/1.0.0/
+
 ## Generates large amounts of fake data for testing purposes
 
 ## Currently only supports postgresql & sqlite3!
