@@ -68,7 +68,7 @@ Override will drop replace every item which would conflict generated query (such
 
 **`Database.setTable(Table table)`**
 
-Sets the table which `Database.insertRow`˙will affect which is currently deprecated by `Database.insertRows()`
+Sets the table which `Database.insertRow` will affect which is currently deprecated by `Database.insertRows()`
 
 **`Database.connect(args) -> None`**
     
