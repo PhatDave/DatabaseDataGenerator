@@ -73,6 +73,14 @@ class SerialGenerator(Generator):
 		return output
 
 
+class ConstantGenerator(Generator):
+	def __init__(self, value):
+		self.__value = value
+
+	def generate(self):
+		return self.__value
+
+
 class SetGenerator(Generator):
 	def __init__(self, chSet, destructive=False):
 		self.chSet = list(chSet)

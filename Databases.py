@@ -83,20 +83,25 @@ class Sqlite3DB(Database):
 
 	def insertRow(self):
 		query = self.__generateQuery()
-		try:
-			self.__cursor.execute(query.query)
-			self.__connection.commit()
+		# try:
+		self.__cursor.execute(query.query)
+		self.__connection.commit()
 		# 	TODO: Fix exception
-		except postgresql.exceptions.UniqueError:
-			if self.__override:
-				pkColumn = query.table.getPkColumnName()
-				pk = query.values[query.names.index(pkColumn)]
-				self.__cursor.execute(
-					f"DELETE FROM {query.table.name} WHERE {pkColumn}={pk};")
-				self.__connection.commit()
-				self.__cursor.execute(query.query)
-				self.__connection.commit()
+		# except postgresql.exceptions.UniqueError:
+		# 	if self.__override:
+		# 		pkColumn = query.table.getPkColumnName()
+		# 		pk = query.values[query.names.index(pkColumn)]
+		# 		self.__cursor.execute(
+		# 			f"DELETE FROM {query.table.name} WHERE {pkColumn}={pk};")
+		# 		self.__connection.commit()
+		# 		self.__cursor.execute(query.query)
+		# 		self.__connection.commit()
 		return
+
+	def insertRows(self, table, numRows):
+		self.setTable(table)
+		for i in range(numRows):
+			self.insertRow()
 
 	def __generateQuery(self):
 		query = Query()
