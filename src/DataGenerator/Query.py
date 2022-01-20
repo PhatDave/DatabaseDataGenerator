@@ -1,3 +1,5 @@
+from .Generators import Generator
+
 class Query:
 	def __init__(self):
 		self.query = ""
@@ -22,8 +24,12 @@ class Query:
 
 		self.query = f"INSERT INTO {table.name}({', '.join(self.__generateColumnNames(table))}) VALUES\n"
 
-		for i in range(rows):
-			self.query += f"({self.__generateValues(table)}),\n"
+		try:
+			for i in range(rows):
+				self.query += f"({self.__tryGenerateValues(table)}),\n"
+		except Generator.GeneratorOutOfItemsException:
+			print(f"SetGenerator only generated {i} values out of {rows} for {table.name}!")
+			pass
 		self.query = self.query[:-2]
 		self.query += ";"
 
@@ -46,7 +52,7 @@ class Query:
 		names = names[:-1]
 		return names
 
-	def __generateValues(self, table):
+	def __tryGenerateValues(self, table):
 		self.values = []
 		for column in table.columns:
 			self.values.append(column.generate())

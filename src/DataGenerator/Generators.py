@@ -5,6 +5,9 @@ from faker_vehicle import VehicleProvider
 
 
 class Generator:
+	class GeneratorOutOfItemsException(Exception):
+		pass
+
 	def __init__(self):
 		pass
 
@@ -111,10 +114,13 @@ class SetGenerator(Generator):
 		self.__destructive = destructive
 
 	def generate(self):
-		pick = random.choice(self.chSet)
-		if self.__destructive:
-			self.chSet.remove(pick)
-		return pick
+		try:
+			pick = random.choice(self.chSet)
+			if self.__destructive:
+				self.chSet.remove(pick)
+			return pick
+		except IndexError:
+			raise self.GeneratorOutOfItemsException
 
 
 class FakeFirstNameGenerator(Generator):

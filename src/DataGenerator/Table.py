@@ -1,4 +1,5 @@
 from .Column import *
+from .CSVReader import *
 
 class Table:
 	def __init__(self, name):
@@ -17,3 +18,8 @@ class Table:
 			if i.pk:
 				return i.name
 		return ""
+
+	def fromCsv(self, filename):
+		csvreader = CSVReader(self)
+		csvreader.read(filename)
+		pass

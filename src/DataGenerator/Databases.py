@@ -84,6 +84,7 @@ class Sqlite3DB(Database):
 		self.__cursor.execute(f"DELETE FROM {table.name};")
 		self.__connection.commit()
 
+	@DeprecationWarning
 	def insertRow(self):
 		query = self.__generateQuery()
 		# try:
