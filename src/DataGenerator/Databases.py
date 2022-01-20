@@ -1,5 +1,6 @@
 from .Table import *
 from .Query import *
+from tqdm import tqdm
 
 class Database:
 	def __init__(self):
@@ -97,9 +98,13 @@ class Sqlite3DB(Database):
 		# 		self.__connection.commit()
 		return
 
-	def insertRows(self, table, numRows):
+	def insertRows(self, table, numRows, bar=True):
 		self.setTable(table)
-		for i in range(numRows):
+		if bar:
+			iterator = tqdm(range(numRows), ncols=200)
+		else:
+			iterator = range(numRows)
+		for i in iterator:
 			self.insertRow()
 
 	def __generateQuery(self):
