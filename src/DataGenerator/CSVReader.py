@@ -36,6 +36,6 @@ class CSVReader:
 		header = header.replace("\n", "")
 		columns = header.split(",")
 		for i, column in enumerate(columns):
-			tempC = Column(column, SetGenerator(self.__data[i], True))
+			tempC = Column(column, SequentialSetGenerator(self.__data[i]))
 			self.__table.addColumn(tempC)
 		return

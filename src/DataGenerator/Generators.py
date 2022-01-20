@@ -57,9 +57,12 @@ class SequentialPatternGenerator(Generator):
 		self.__chList = chList
 
 	def generate(self):
-		pick = self.__chList.pop(0)
-		output = self.__trySub(self.__pattern, "%s", pick)
-		return output
+		try:
+			pick = self.__chList.pop(0)
+			output = self.__trySub(self.__pattern, "%s", pick)
+			return output
+		except IndexError:
+			raise self.GeneratorOutOfItemsException
 	
 	def __trySub(self, istr, pattern, sub):
 		return istr.replace(pattern, str(sub))
@@ -118,6 +121,18 @@ class SetGenerator(Generator):
 			pick = random.choice(self.chSet)
 			if self.__destructive:
 				self.chSet.remove(pick)
+			return pick
+		except IndexError:
+			raise self.GeneratorOutOfItemsException
+
+
+class SequentialSetGenerator(Generator):
+	def __init__(self, chSet):
+		self.chSet = list(chSet)
+
+	def generate(self):
+		try:
+			pick = self.chSet.pop(0)
 			return pick
 		except IndexError:
 			raise self.GeneratorOutOfItemsException
