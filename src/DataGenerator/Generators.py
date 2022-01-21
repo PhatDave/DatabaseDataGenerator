@@ -394,7 +394,7 @@ class PrettyTimeGenerator(Generator):
 		days = 0
 
 		while time >= self.secondsInDay:
-			hours += 1
+			days += 1
 			time -= self.secondsInDay
 		while time >= self.secondsInHour:
 			hours += 1

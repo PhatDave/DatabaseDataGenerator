@@ -38,14 +38,15 @@ class PostgreSQLDB(Database):
 				self.__connection.execute(query.query)
 		return
 
-	def insertRows(self, table, numRows, bar=True):
+	def insertRows(self, table, numRows):
 		self.setTable(table)
-		if bar:
-			iterator = tqdm(range(numRows), ncols=200)
-		else:
-			iterator = range(numRows)
-		for i in iterator:
-			self.insertRow()
+		query = self.__generateBigQuery(numRows)
+		self.__connection.execute(query.query)
+
+	def __generateBigQuery(self, rows):
+		query = Query()
+		query.generateBig(self.__table, rows)
+		return query
 
 	def __generateQuery(self):
 		query = Query()

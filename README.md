@@ -267,4 +267,35 @@ FakeLicensePlateGenerator()
 # FF1 5232
 # XU2 X0Q
 # PC 66274
+
+PrettyTimeGenerator()
+# PrettyTimeGenerator(imin, imax)
+# 9h 55m 8s
+# 4d 7h 33m 39s
+# 21d 11h 2m 25s
+
+# Note, all the datetime objects the following generators generate are automatically converted to strings for use in the query
+FakeDateTimeGenerator()
+# FakeDateTimeGenerator()
+# 1416-09-27 10:31:54
+# 1318-06-06 00:06:24
+# 1701-04-08 02:42:37
+
+FakeCurrentDecadeDateTimeGenerator()
+# FakeCurrentDecadeDateTimeGenerator()
+# 2020-04-09 15:18:36
+# 2021-08-25 21:12:06
+# 2021-08-26 18:40:42
+
+FakeCurrentYearDateTimeGenerator()
+# FakeCurrentYearDateTimeGenerator()
+# 2022-01-05 18:46:21
+# 2022-01-13 13:00:15
+# 2022-01-16 00:20:28
+
+FakeCurrentMonthDateTimeGenerator()
+# FakeCurrentMonthDateTimeGenerator()
+# 2022-01-19 08:15:51
+# 2022-01-12 19:07:15
+# 2022-01-03 21:36:32
 ```
