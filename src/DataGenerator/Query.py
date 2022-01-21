@@ -1,4 +1,5 @@
 from .Generators import Generator
+from tqdm import tqdm
 
 class Query:
 	def __init__(self):
@@ -23,13 +24,15 @@ class Query:
 			self.table = table
 
 		self.query = f"INSERT INTO {table.name}({', '.join(self.__generateColumnNames(table))}) VALUES\n"
+		self.queries = []
 
 		try:
-			for i in range(rows):
-				self.query += f"({self.__tryGenerateValues(table)}),\n"
+			for i in tqdm(range(rows), ncols=200):
+				self.queries.append(f"({self.__tryGenerateValues(table)}),\n")
 		except Generator.GeneratorOutOfItemsException:
 			print(f"SetGenerator only generated {i} values out of {rows} for {table.name}!")
 			pass
+		self.query += ''.join(self.queries)
 		self.query = self.query[:-2]
 		self.query += ";"
 

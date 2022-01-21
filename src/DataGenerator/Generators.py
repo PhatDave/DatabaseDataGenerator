@@ -312,6 +312,42 @@ class FakeCurrentYearDateGenerator(Generator):
 		return name
 
 
+class FakeDateTimeGenerator(Generator):
+	def __init__(self):
+		self.__faker = Faker()
+
+	def generate(self):
+		name = self.__faker.date_time_ad()
+		return str(name)
+
+
+class FakeCurrentDecadeDateTimeGenerator(Generator):
+	def __init__(self):
+		self.__faker = Faker()
+
+	def generate(self):
+		name = self.__faker.date_time_this_decade()
+		return str(name)
+
+
+class FakeCurrentMonthDateTimeGenerator(Generator):
+	def __init__(self):
+		self.__faker = Faker()
+
+	def generate(self):
+		name = self.__faker.date_time_this_month()
+		return str(name)
+
+
+class FakeCurrentYearDateTimeGenerator(Generator):
+	def __init__(self):
+		self.__faker = Faker()
+
+	def generate(self):
+		name = self.__faker.date_time_this_year()
+		return str(name)
+
+
 class FakeVehicleModelGenerator(Generator):
 	def __init__(self):
 		self.__faker = Faker()
@@ -342,3 +378,41 @@ class FakeLicensePlateGenerator(Generator):
 		name = self.__faker.license_plate()
 		name = name.replace('\'', "")
 		return name
+
+class PrettyTimeGenerator(Generator):
+	def __init__(self, imin, imax):
+		self.__imin = imin
+		self.__imax = imax
+		self.secondsInMinute = 60
+		self.secondsInHour = 60 * 60
+		self.secondsInDay = 60 * 60 * 24
+
+	def generate(self):
+		time = random.randint(self.__imin, self.__imax)
+		minutes = 0
+		hours = 0
+		days = 0
+
+		while time >= self.secondsInDay:
+			hours += 1
+			time -= self.secondsInDay
+		while time >= self.secondsInHour:
+			hours += 1
+			time -= self.secondsInHour
+		while time >= self.secondsInMinute:
+			minutes += 1
+			time -= self.secondsInMinute
+		seconds = time
+
+		timeStr = ""
+		timeStr = self.__addValIfNotNone(timeStr, days, 'd');
+		timeStr = self.__addValIfNotNone(timeStr, hours, 'h');
+		timeStr = self.__addValIfNotNone(timeStr, minutes, 'm');
+		timeStr = self.__addValIfNotNone(timeStr, seconds, 's');
+		timeStr = timeStr[:-1]
+		return timeStr
+
+	def __addValIfNotNone(self, istr, val, affix):
+		if val > 0:
+			istr += str(val) + affix + " "
+		return istr
