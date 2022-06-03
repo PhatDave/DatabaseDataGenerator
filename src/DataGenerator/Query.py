@@ -12,7 +12,7 @@ class Query:
 		if self.table is None:
 			self.table = table
 
-		self.query = f"INSERT INTO {table.name}({', '.join(self.__generateColumnNames(table))}) VALUES ({self.__generateValues(table)});"
+		self.query = f"INSERT INTO {table.name}({', '.join(self.__generateColumnNames(table))}) VALUES ({self.__tryGenerateValues(table)});"
 
 		self.query = self.query.replace("[", "")
 		self.query = self.query.replace("]", "")

@@ -6,3 +6,4 @@ dist
 **.sqlite3
 **egg
 tet.ty
+src/DatabaseDataGenerator.egg-info
