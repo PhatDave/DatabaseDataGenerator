@@ -14,6 +14,18 @@ class Generator:
     def generate(self):
         pass
 
+    def pickUnique(self, fakerFunction, pickTable):
+        picks = 0
+        while True:
+            name = fakerFunction()
+            if name not in pickTable:
+                pickTable.append(name)
+                break
+            picks += 1
+            if picks > 1000:
+                raise GeneratorOutOfItemsException
+        return name
+
 
 class RandomStringGenerator(Generator):
     class EmptyStringException(Exception):
@@ -139,20 +151,35 @@ class SequentialSetGenerator(Generator):
 
 
 class FakeFirstNameGenerator(Generator):
-    def __init__(self):
+    def __init__(self, unique=False):
+        self.__unique = unique
+        if unique:
+            self.__pickTable = []
         self.__faker = Faker()
+        self.__fakerFunction = self.__faker.first_name
 
+    # todo this can be done better by making it more generic
     def generate(self):
-        name = self.__faker.first_name()
+        if self.__unique:
+            name = self.pickUnique(self.__fakerFunction, self.__pickTable)
+        else:
+            name = fakerFunction()
         return name
 
 
 class FakeLastNameGenerator(Generator):
-    def __init__(self):
+    def __init__(self, unique=False):
+        self.__unique = unique
+        if unique:
+            self.__pickTable = []
         self.__faker = Faker()
+        self.__fakerFunction = self.__faker.last_name
 
     def generate(self):
-        name = self.__faker.last_name()
+        if self.__unique:
+            name = self.pickUnique(self.__fakerFunction, self.__pickTable)
+        else:
+            name = fakerFunction()
         return name
 
 
@@ -196,11 +223,18 @@ class FakeStreetGenerator(Generator):
 
 
 class FakeEmailGenerator(Generator):
-    def __init__(self):
+    def __init__(self, unique=False):
+        self.__unique = unique
+        if unique:
+            self.__pickTable = []
         self.__faker = Faker()
+        self.__fakerFunction = self.__faker.email
 
     def generate(self):
-        name = self.__faker.email()
+        if self.__unique:
+            name = self.pickUnique(self.__fakerFunction, self.__pickTable)
+        else:
+            name = fakerFunction()
         name = name.replace('\'', "")
         return name
 
@@ -256,11 +290,18 @@ class FakeUrlGenerator(Generator):
 
 
 class FakeUsernameGenerator(Generator):
-    def __init__(self):
+    def __init__(self, unique=False):
+        self.__unique = unique
+        if unique:
+            self.__pickTable = []
         self.__faker = Faker()
+        self.__fakerFunction = self.__faker.user_name
 
     def generate(self):
-        name = self.__faker.user_name()
+        if self.__unique:
+            name = self.pickUnique(self.__fakerFunction, self.__pickTable)
+        else:
+            name = fakerFunction()
         name = name.replace('\'', "")
         return name
 
