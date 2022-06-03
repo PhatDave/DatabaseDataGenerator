@@ -25,7 +25,7 @@ setuptools.setup(
     python_requires=">=3.6",
     install_requires=[
         "Faker>=11.3.0",
-        "py-postgresql>=1.2.2",
+        "psycopg2>=2.9.3",
         "python-dateutil>=2.8.2",
         "six>=1.16.0",
         "text-unidecode>=1.3",
