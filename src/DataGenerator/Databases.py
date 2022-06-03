@@ -8,40 +8,41 @@ class Database:
 
 
 class PostgreSQLDB(Database):
-	import postgresql
-	global postgresql
+	import psycopg2
+	global psycopg2
 
 	def __init__(self, override=False, wipe=False):
 		self.__connection = None
+		self.__cursor = None
 		self.__table = None
 		self.__wipe = wipe
 		self.__override = override
 
 	def connect(self, user="demo", password="demo", ip="127.0.0.1",
 				port="5432", dbName="demo"):
-		self.__connection = postgresql.open(
-			f'pq://{user}:{password}@{ip}:{port}/{dbName}')
+		self.__connection = psycopg2.connect(f"dbname={dbName} user={user} password={password} host={ip} port={port}")
+		self.__cursor = self.__connection.cursor()
 
 	def wipeTable(self, table: Table):
-		self.__connection.execute(f"DELETE FROM {table.name} *;")
+		self.__cursor.execute(f"DELETE FROM {table.name} *;")
 
 	def insertRow(self):
 		query = self.__generateQuery()
 		try:
-			self.__connection.execute(query.query)
+			self.__cursor.execute(query.query)
 		except postgresql.exceptions.UniqueError:
 			if self.__override:
 				pkColumn = query.table.getPkColumnName()
 				pk = query.values[query.names.index(pkColumn)]
-				self.__connection.execute(
+				self.__cursor.execute(
 					f"DELETE FROM {query.table.name} WHERE {pkColumn}={pk};")
-				self.__connection.execute(query.query)
+				self.__cursor.execute(query.query)
 		return
 
 	def insertRows(self, table, numRows):
 		self.setTable(table)
 		query = self.__generateBigQuery(numRows)
-		self.__connection.execute(query.query)
+		self.__cursor.execute(query.query)
 
 	def __generateBigQuery(self, rows):
 		query = Query()
