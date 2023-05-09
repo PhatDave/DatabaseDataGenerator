@@ -1,144 +1,197 @@
 from .Table import *
 from .Query import *
-from tqdm import tqdm
 
 
 class Database:
-    def __init__(self):
-        self.__connection = None
+	def __init__(self):
+		self.__connection = None
 
 
 class PostgreSQLDB(Database):
-    import psycopg2
-    global psycopg2
+	import psycopg2
+	global psycopg2
 
-    def __init__(self, override=False, wipe=False):
-        self.__connection = None
-        self.__cursor = None
-        self.__table = None
-        self.__wipe = wipe
-        self.__override = override
+	def __init__(self, override=False, wipe=False):
+		self.__connection = None
+		self.__cursor = None
+		self.__table = None
+		self.__wipe = wipe
+		self.__override = override
 
-    def connect(self, user="demo", password="demo", ip="127.0.0.1",
-                port="5432", dbName="demo"):
-        self.__connection = psycopg2.connect(f"dbname={dbName} user={user} password={password} host={ip} port={port}")
-        self.__cursor = self.__connection.cursor()
+	def connect(self, user="demo", password="demo", ip="127.0.0.1",
+	            port="5432", dbName="demo"):
+		self.__connection = psycopg2.connect(f"dbname={dbName} user={user} password={password} host={ip} port={port}")
+		self.__cursor = self.__connection.cursor()
 
-    def wipeTable(self, table: Table):
-        self.__cursor.execute(f"DELETE FROM {table.name} *;")
+	def wipeTable(self, table: Table):
+		self.__cursor.execute(f"DELETE FROM {table.name} *;")
 
-    def executeQuery(self, query):
-        self.__cursor.execute(query)
-        self.__connection.commit()
+	def executeQuery(self, query):
+		self.__cursor.execute(query)
+		self.__connection.commit()
 
-    def insertRow(self):
-        query = self.__generateQuery()
-        try:
-            self.__cursor.execute(query.query)
-            self.__connection.commit()
-        except psycopg2.errors.UniqueViolation:
-            if self.__override:
-                pkColumn = query.table.getPkColumnName()
-                pk = query.values[query.names.index(pkColumn)]
-                self.__cursor.execute("ROLLBACK")
-                self.__cursor.execute(
-                    f"DELETE FROM {query.table.name} WHERE {pkColumn}={pk};")
-                self.__connection.commit()
-                self.__cursor.execute(query.query)
-                self.__connection.commit()
-        return
+	def insertRow(self):
+		query = self.__generateQuery()
+		try:
+			self.__cursor.execute(query.query)
+			self.__connection.commit()
+		except psycopg2.errors.UniqueViolation:
+			if self.__override:
+				pkColumn = query.table.getPkColumnName()
+				pk = query.values[query.names.index(pkColumn)]
+				self.__cursor.execute("ROLLBACK")
+				self.__cursor.execute(
+					f"DELETE FROM {query.table.name} WHERE {pkColumn}={pk};")
+				self.__connection.commit()
+				self.__cursor.execute(query.query)
+				self.__connection.commit()
+		return
 
-    def insertRows(self, table, numRows):
-        self.setTable(table)
-        query = self.__generateBigQuery(numRows)
-        self.__cursor.execute(query.query)
-        self.__connection.commit()
+	def insertRows(self, table, numRows):
+		self.setTable(table)
+		query = self.__generateBigQuery(numRows)
+		self.__cursor.execute(query.query)
+		self.__connection.commit()
 
-    def __generateBigQuery(self, rows):
-        query = Query()
-        query.generateBig(self.__table, rows)
-        return query
+	def __generateBigQuery(self, rows):
+		query = Query()
+		query.generateBig(self.__table, rows)
+		return query
 
-    def __generateQuery(self):
-        query = Query()
-        query.generate(self.__table)
-        return query
+	def __generateQuery(self):
+		query = Query()
+		query.generate(self.__table)
+		return query
 
-    def getPkSet(self, table: Table):
-        test = self.__connection.prepare(
-            f"SELECT {table.getPkColumnName()} FROM {table.name}")
-        arr = test()
-        arr = [i[0] for i in arr]
-        return set(arr)
+	def getPkSet(self, table: Table):
+		test = self.__connection.prepare(
+			f"SELECT {table.getPkColumnName()} FROM {table.name}")
+		arr = test()
+		arr = [i[0] for i in arr]
+		return set(arr)
 
-    def setTable(self, table: Table):
-        self.__table = table
-        if self.__wipe:
-            self.wipeTable(table)
+	def setTable(self, table: Table):
+		self.__table = table
+		if self.__wipe:
+			self.wipeTable(table)
 
 
 class Sqlite3DB(Database):
-    import sqlite3
-    global sqlite3
+	import sqlite3
+	global sqlite3
 
-    def __init__(self, override=False, wipe=False):
-        self.__connection = None
-        self.__cursor = None
-        self.__table = None
-        self.__wipe = wipe
-        self.__override = override
+	def __init__(self, override=False, wipe=False):
+		self.__connection = None
+		self.__cursor = None
+		self.__table = None
+		self.__wipe = wipe
+		self.__override = override
 
-    def connect(self, dbName="demo.db"):
-        self.__connection = sqlite3.connect(dbName)
-        self.__cursor = self.__connection.cursor()
+	def connect(self, dbName="demo.db"):
+		self.__connection = sqlite3.connect(dbName)
+		self.__cursor = self.__connection.cursor()
 
-    def wipeTable(self, table: Table):
-        self.__cursor.execute(f"DELETE FROM {table.name};")
-        self.__connection.commit()
+	def wipeTable(self, table: Table):
+		self.__cursor.execute(f"DELETE FROM {table.name};")
+		self.__connection.commit()
 
-    @DeprecationWarning
-    def insertRow(self):
-        query = self.__generateQuery()
-        # try:
-        self.__cursor.execute(query.query)
-        self.__connection.commit()
-        # 	TODO: Fix exception
-        # except postgresql.exceptions.UniqueError:
-        # 	if self.__override:
-        # 		pkColumn = query.table.getPkColumnName()
-        # 		pk = query.values[query.names.index(pkColumn)]
-        # 		self.__cursor.execute(
-        # 			f"DELETE FROM {query.table.name} WHERE {pkColumn}={pk};")
-        # 		self.__connection.commit()
-        # 		self.__cursor.execute(query.query)
-        # 		self.__connection.commit()
-        return
+	@DeprecationWarning
+	def insertRow(self):
+		query = self.__generateQuery()
+		# try:
+		self.__cursor.execute(query.query)
+		self.__connection.commit()
+		# 	TODO: Fix exception
+		# except postgresql.exceptions.UniqueError:
+		# 	if self.__override:
+		# 		pkColumn = query.table.getPkColumnName()
+		# 		pk = query.values[query.names.index(pkColumn)]
+		# 		self.__cursor.execute(
+		# 			f"DELETE FROM {query.table.name} WHERE {pkColumn}={pk};")
+		# 		self.__connection.commit()
+		# 		self.__cursor.execute(query.query)
+		# 		self.__connection.commit()
+		return
 
-    def insertRows(self, table, numRows):
-        self.setTable(table)
-        query = self.__generateBigQuery(numRows)
-        self.__cursor.execute(query.query)
-        self.__connection.commit()
+	def insertRows(self, table, numRows):
+		self.setTable(table)
+		query = self.__generateBigQuery(numRows)
+		self.__cursor.execute(query.query)
+		self.__connection.commit()
 
-    def __generateQuery(self):
-        query = Query()
-        query.generate(self.__table)
-        return query
+	def __generateQuery(self):
+		query = Query()
+		query.generate(self.__table)
+		return query
 
-    def __generateBigQuery(self, rows):
-        query = Query()
-        query.generateBig(self.__table, rows)
-        return query
+	def __generateBigQuery(self, rows):
+		query = Query()
+		query.generateBig(self.__table, rows)
+		return query
 
-    def getPkSet(self, table: Table):
-        # TODO: add exception for no pk found
-        arr = []
-        for row in self.__cursor.execute(
-                f"SELECT {table.getPkColumnName()} FROM {table.name}"):
-            arr.append(row[0])
-        return set(arr)
+	def getPkSet(self, table: Table):
+		# TODO: add exception for no pk found
+		arr = []
+		for row in self.__cursor.execute(
+				f"SELECT {table.getPkColumnName()} FROM {table.name}"):
+			arr.append(row[0])
+		return set(arr)
 
-    def setTable(self, table: Table):
-        self.__table = table
-        if self.__wipe:
-            self.wipeTable(table)
+	def setTable(self, table: Table):
+		self.__table = table
+		if self.__wipe:
+			self.wipeTable(table)
+
+
+class MySQL(Database):
+	import mysql.connector as my_conn
+	global my_conn
+
+	def __init__(self, override=False, wipe=False):
+		self.__connection = None
+		self.__cursor = None
+		self.__table = None
+		self.__wipe = wipe
+		self.__override = override
+
+	def connect(self, user=None, password=None, host=None, port=None, db_name=None):
+		self.__connection = my_conn.connect(host=host, user=user, password=password, db=db_name)
+		self.__cursor = self.__connection.cursor()
+
+	def wipeTable(self, table: Table):
+		self.__cursor.execute(f"DELETE FROM {table.name};")
+		self.__connection.commit()
+
+	def insertRow(self):
+		query = self.__generate_query()
+		self.__cursor.execute(query.query)
+		self.__connection.commit()
+		return
+
+	def insertRows(self, table, num_rows):
+		self.setTable(table)
+		query = self.__generateBigQuery(num_rows)
+		self.__cursor.execute(query.query)
+		self.__connection.commit()
+
+	def __generate_query(self):
+		query = Query()
+		query.generate(self.__table)
+		return query
+
+	def __generateBigQuery(self, rows):
+		query = Query()
+		query.generateBig(self.__table, rows)
+		return query
+
+	def get_pk_set(self, table: Table):
+		arr = []
+		for row in self.__cursor.execute(
+				f"SELECT {table.getPkColumnName()} FROM {table.name}"):
+			arr.append(row[0])
+		return set(arr)
+
+	def setTable(self, table: Table):
+		self.__table = table
+		if self.__wipe:
+			self.wipeTable(table)
