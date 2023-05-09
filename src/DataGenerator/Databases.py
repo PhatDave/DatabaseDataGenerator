@@ -155,22 +155,22 @@ class MySQL(Database):
 		self.__override = override
 
 	def connect(self, user=None, password=None, host=None, port=None, db_name=None):
-		self.__connection = my_conn.connect(host=host, user=user, password=password, db=db_name)
+		self.__connection = my_conn.connect(user=user, password=password, host=host, port=port, db=db_name)
 		self.__cursor = self.__connection.cursor()
 
-	def wipeTable(self, table: Table):
+	def wipe_table(self, table: Table):
 		self.__cursor.execute(f"DELETE FROM {table.name};")
 		self.__connection.commit()
 
-	def insertRow(self):
+	def insert_row(self):
 		query = self.__generate_query()
 		self.__cursor.execute(query.query)
 		self.__connection.commit()
 		return
 
-	def insertRows(self, table, num_rows):
-		self.setTable(table)
-		query = self.__generateBigQuery(num_rows)
+	def insert_rows(self, table, num_rows):
+		self.set_table(table)
+		query = self.__generate_big_query(num_rows)
 		self.__cursor.execute(query.query)
 		self.__connection.commit()
 
@@ -179,7 +179,7 @@ class MySQL(Database):
 		query.generate(self.__table)
 		return query
 
-	def __generateBigQuery(self, rows):
+	def __generate_big_query(self, rows):
 		query = Query()
 		query.generateBig(self.__table, rows)
 		return query
@@ -191,7 +191,7 @@ class MySQL(Database):
 			arr.append(row[0])
 		return set(arr)
 
-	def setTable(self, table: Table):
+	def set_table(self, table: Table):
 		self.__table = table
 		if self.__wipe:
-			self.wipeTable(table)
+			self.wipe_table(table)
