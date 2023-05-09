@@ -163,7 +163,7 @@ class FakeFirstNameGenerator(Generator):
         if self.__unique:
             name = self.pickUnique(self.__fakerFunction, self.__pickTable)
         else:
-            name = fakerFunction()
+            name = self.__fakerFunction()
         return name
 
 
@@ -179,7 +179,7 @@ class FakeLastNameGenerator(Generator):
         if self.__unique:
             name = self.pickUnique(self.__fakerFunction, self.__pickTable)
         else:
-            name = fakerFunction()
+            name = self.__fakerFunction()
         return name
 
 
@@ -234,7 +234,7 @@ class FakeEmailGenerator(Generator):
         if self.__unique:
             name = self.pickUnique(self.__fakerFunction, self.__pickTable)
         else:
-            name = fakerFunction()
+            name = self.__fakerFunction()
         name = name.replace('\'', "")
         return name
 
@@ -301,7 +301,7 @@ class FakeUsernameGenerator(Generator):
         if self.__unique:
             name = self.pickUnique(self.__fakerFunction, self.__pickTable)
         else:
-            name = fakerFunction()
+            name = self.__fakerFunction()
         name = name.replace('\'', "")
         return name
 
